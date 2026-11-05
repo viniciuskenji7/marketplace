@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -7,6 +7,8 @@ import { ProductModule } from './product/product.module.js';
 import { CartModule } from './cart/cart.module.js';
 import { OrderModule } from './order/order.module.js';
 import { OrderItemsModule } from './order_items/order_items.module.js';
+import { MailModule } from './mail/mail.module.js';
+import { CartMiddleware } from './cart/middleware/cart-id.middleware.js';
 @Module({
   imports: [
     // Carrega as variaveis do .env
@@ -37,8 +39,13 @@ import { OrderItemsModule } from './order_items/order_items.module.js';
     CartModule,
     OrderModule,
     OrderItemsModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CartMiddleware).forRoutes('cart', 'complete-purchase');
+  }
+}

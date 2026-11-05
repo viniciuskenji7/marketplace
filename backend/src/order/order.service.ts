@@ -20,7 +20,7 @@ export class OrderService {
     return `This action updates a #${id} order`;
   }
 
-  remove(id: number) {
+  delete(id: number) {
     return `This action removes a #${id} order`;
   }
 }
