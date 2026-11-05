@@ -5,6 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product/product.module.js';
 import { CartModule } from './cart/cart.module.js';
+import { OrderModule } from './order/order.module.js';
+import { OrderItemsModule } from './order_items/order_items.module.js';
 @Module({
   imports: [
     // Carrega as variaveis do .env
@@ -33,6 +35,8 @@ import { CartModule } from './cart/cart.module.js';
     }),
     ProductModule,
     CartModule,
+    OrderModule,
+    OrderItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
