@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Product } from '../product/entities/product.entity.js';
@@ -45,5 +45,67 @@ export class CartService {
 
         const totalCents = items.reduce((sum, i) => sum + i.subTotalCents, 0);
         return { items, totalCents };
+    }
+
+    async addItem(cartId: string, productId: number, quantity: number) {
+        const product = await this.findActiveProduct(productId);
+
+        const cart = await this.getOrCreate(cartId);
+        const newQuantity = ( cart.get(productId) ?? 0 ) + quantity;
+        this.assertStock(product, newQuantity);
+        cart.set(productId, newQuantity);
+
+        return this.getCart(cartId);
+    }
+
+    async updateItem(cartId: string, productId: number, quantity: number) {
+        if (quantity === 0) {
+            this.cart.get(cartId)?.delete(productId);
+            return this.getCart(cartId);
+        }
+        
+        const product = await this.findActiveProduct(productId);
+
+        const cart = this.getOrCreate(cartId);
+        this.assertStock(product, quantity);
+        cart.set(productId, quantity);
+
+        return this.getCart(cartId);
+    }
+
+    getRawItems(cartId: string): { productId: number; quantity: number }[] {
+        const cart = this.cart.get(cartId);
+        if (!cart) return [];
+        return [...cart].map(([productId, quantity]) => ({ productId, quantity }));
+    }
+
+    clear(cartId: string): void {
+        this.cart.delete(cartId);
+    }
+
+
+    private getOrCreate(cartId: string): Map<number, number> {
+        let cart = this.cart.get(cartId);
+        if (!cart) {
+        cart = new Map();
+        this.cart.set(cartId, cart);
+        }
+        return cart;
+    }
+
+    private async findActiveProduct(productId: number): Promise<Product> {
+        const product = await this.productRepository.findOne({
+            where: { id: productId, is_active: 1 },
+        });
+        if (!product) throw new NotFoundException('Produto não encontrado');
+        return product;
+    }
+
+    private assertStock(product: Product, quantity: number): void {
+        if (quantity > product.stock) {
+            throw new ConflictException(
+                `Estoque insuficiente para "${product.name}" (disponível: ${product.stock})`,
+            );
+        }
     }
 }
