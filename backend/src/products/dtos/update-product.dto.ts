@@ -3,7 +3,7 @@ import { IsDecimal, IsInt, IsOptional, IsString } from "class-validator";
 
 
 @Injectable()
-export class UpdateProductsDTO {
+export class UpdateProductDTO {
     @IsString()
     @IsOptional()
     name?: string;

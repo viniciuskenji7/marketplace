@@ -1,9 +1,9 @@
 import { Body, Controller, Get, HttpCode, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { ProductService } from "./product.service.js";
-import { CreateProductDTO } from "./dtos/create-products.dto.js";
-import { UpdateProductsDTO } from "./dtos/update-products.dto.js";
+import { CreateProductDTO } from "./dtos/create-product.dto.js";
+import { UpdateProductDTO } from "./dtos/update-product.dto.js";
 
-@Controller('products')
+@Controller('product')
 export class ProductController {
     constructor (private readonly productService: ProductService){}
 
@@ -25,9 +25,9 @@ export class ProductController {
     @Put(':id')
     update(
         @Param('id', ParseIntPipe) id: number,
-        @Body() updateProductsDTO: UpdateProductsDTO
+        @Body() UpdateProductDTO: UpdateProductDTO
     ) {
-        return this.productService.update(id, updateProductsDTO); 
+        return this.productService.update(id, UpdateProductDTO); 
     }
 
 }

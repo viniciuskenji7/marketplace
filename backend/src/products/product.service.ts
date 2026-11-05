@@ -1,41 +1,41 @@
 import { Injectable, NotFoundException, Param } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Products } from "./entities/product.entity.js";
+import { Product } from "./entities/product.entity.js";
 import { Repository } from "typeorm";
-import { CreateProductDTO } from "./dtos/create-products.dto.js";
-import { UpdateProductsDTO } from "./dtos/update-products.dto.js";
+import { CreateProductDTO } from "./dtos/create-product.dto.js";
+import { UpdateProductDTO } from "./dtos/update-product.dto.js";
 
 
 @Injectable()
 export class ProductService {
 
     constructor(
-        @InjectRepository(Products)
-        private readonly productsRepository: Repository<Products>,
+        @InjectRepository(Product)
+        private readonly productRepository: Repository<Product>,
     ){}
 
-    async findAll(): Promise<Products[]> {
-        return await this.productsRepository.find()
+    async findAll(): Promise<Product[]> {
+        return await this.productRepository.find()
     }
 
-    async findOne(id: number): Promise<Products | null> {
-        return await this.productsRepository.findOneBy({id});
+    async findOne(id: number): Promise<Product | null> {
+        return await this.productRepository.findOneBy({id});
     }
 
     async create(createProductDTO: CreateProductDTO) {
-        const newProduct = this.productsRepository.create(createProductDTO);
-        return await this.productsRepository.save(newProduct);
+        const newProduct = this.productRepository.create(createProductDTO);
+        return await this.productRepository.save(newProduct);
     }
     
-    async update(id: number, updateProductsDTO: UpdateProductsDTO) {
-        const product = await this.productsRepository.findOneBy({id});
+    async update(id: number, UpdateProductDTO: UpdateProductDTO) {
+        const product = await this.productRepository.findOneBy({id});
         
         if(!product) {
             throw new NotFoundException(`O produto com id ${id} não foi encontrado`);
         }
 
-        const updateProduct = this.productsRepository.merge(product, updateProductsDTO);
+        const updateProduct = this.productRepository.merge(product, UpdateProductDTO);
 
-        return await this.productsRepository.save(updateProduct);
+        return await this.productRepository.save(updateProduct);
     }
 }
