@@ -87,8 +87,8 @@ export class CartService {
     private getOrCreate(cartId: string): Map<number, number> {
         let cart = this.cart.get(cartId);
         if (!cart) {
-        cart = new Map();
-        this.cart.set(cartId, cart);
+            cart = new Map();
+            this.cart.set(cartId, cart);
         }
         return cart;
     }

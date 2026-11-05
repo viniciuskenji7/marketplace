@@ -12,6 +12,7 @@ export interface RequestWithCart extends Request {
     cartId: string;
 }
 
+// Fiz este middleware para manter o carrinho nos cookies por 24h
 @Injectable()
 export class CartMiddleware implements NestMiddleware {
     use (req: RequestWithCart, res: Response, next: NextFunction) {

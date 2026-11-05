@@ -46,6 +46,6 @@ import { CartMiddleware } from './cart/middleware/cart-id.middleware.js';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CartMiddleware).forRoutes('cart', 'complete-purchase');
+    consumer.apply(CartMiddleware).forRoutes('carrinho', 'finalizar-compra');
   }
 }
