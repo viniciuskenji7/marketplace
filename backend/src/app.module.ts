@@ -4,6 +4,7 @@ import { AppService } from './app.service.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './products/product.module.js';
+import { CartModule } from './cart/cart.module.js';
 @Module({
   imports: [
     // Carrega as variaveis do .env
@@ -31,6 +32,7 @@ import { ProductModule } from './products/product.module.js';
       })
     }),
     ProductModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],
