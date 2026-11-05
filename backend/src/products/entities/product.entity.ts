@@ -23,9 +23,9 @@ export class Products {
     @Column('tinyint', { default: 1 })
     is_active: number;
 
-    @CreateDateColumn('datetime')
-    created_at: Date;
+    @CreateDateColumn()
+    created_at: string;
 
-    @UpdateDateColumn('datetime')
-    updated_at: Date;
+    @UpdateDateColumn()
+    updated_at: string;
 }

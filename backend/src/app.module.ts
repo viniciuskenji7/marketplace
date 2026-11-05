@@ -3,7 +3,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
+import { ProductModule } from './products/product.module.js';
 @Module({
   imports: [
     // Carrega as variaveis do .env
@@ -26,10 +26,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
         autoLoadEntities: true,
 
-        synchronize: false,
-        migrationsRun: false
+        synchronize: true,
+        migrationsRun: true
       })
-    })
+    }),
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
