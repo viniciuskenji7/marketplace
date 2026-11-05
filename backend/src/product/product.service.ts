@@ -38,4 +38,14 @@ export class ProductService {
 
         return await this.productRepository.save(updateProduct);
     }
+
+    async delete(id: number) {
+        const product = await this.productRepository.findOneBy({id});
+
+        if (!product) {
+            throw new NotFoundException(`O produto com id ${id} não foi encontrado`);
+        }
+
+        return await this.productRepository.remove(product);
+    }
 }
