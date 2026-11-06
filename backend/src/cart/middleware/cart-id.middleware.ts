@@ -3,8 +3,6 @@ import { isUUID } from "class-validator";
 import { randomUUID } from "crypto";
 import { NextFunction, Request, Response } from "express";
 
-
-
 export const CART_COOKIE = 'cartId';
 export const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
