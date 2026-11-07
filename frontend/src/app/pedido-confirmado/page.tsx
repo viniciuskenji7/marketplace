@@ -1,46 +1,73 @@
 'use client';
 
-import { useEffect, useMemo, useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
 import { CircleCheck } from 'lucide-react';
 import Link from 'next/link';
+import { z } from 'zod';
 import { storedCheckoutSchema } from '@/src/schemas/storedCheckoutSchema';
 
-const subscribeToCheckout = () => () => {};
-const getCheckoutSnapshot = () =>
-  typeof window === 'undefined'
-    ? null
-    : sessionStorage.getItem('marketplace-checkout-result');
-const getServerCheckoutSnapshot = () => null;
+type StoredCheckout = z.infer<typeof storedCheckoutSchema>;
+
+type CheckoutPageState =
+  | { status: 'loading' }
+  | { status: 'missing' }
+  | { status: 'invalid' }
+  | { status: 'loaded'; checkout: StoredCheckout };
 
 const formatPrice = (value: number) =>
   Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
 export default function OrderConfirmedPage() {
-  const rawCheckout = useSyncExternalStore(
-    subscribeToCheckout,
-    getCheckoutSnapshot,
-    getServerCheckoutSnapshot,
-  );
-  const { storedCheckout, storageError } = useMemo(() => {
-    if (!rawCheckout) return { storedCheckout: null, storageError: false };
-
-    try {
-      const parsed = storedCheckoutSchema.safeParse(JSON.parse(rawCheckout));
-      return parsed.success
-        ? { storedCheckout: parsed.data, storageError: false }
-        : { storedCheckout: null, storageError: true };
-    } catch {
-      return { storedCheckout: null, storageError: true };
-    }
-  }, [rawCheckout]);
+  const [checkoutState, setCheckoutState] = useState<CheckoutPageState>({
+    status: 'loading',
+  });
 
   useEffect(() => {
-    if (storedCheckout) {
-      sessionStorage.removeItem('marketplace-checkout-result');
-    }
-  }, [storedCheckout]);
+    let isActive = true;
 
-  if (storageError) {
+    queueMicrotask(() => {
+      if (!isActive) return;
+
+      try {
+        const rawCheckout = sessionStorage.getItem(
+          'marketplace-checkout-result',
+        );
+        if (!rawCheckout) {
+          setCheckoutState({ status: 'missing' });
+          return;
+        }
+
+        const parsed = storedCheckoutSchema.safeParse(JSON.parse(rawCheckout));
+        if (!parsed.success) {
+          setCheckoutState({ status: 'invalid' });
+          return;
+        }
+
+        sessionStorage.removeItem('marketplace-checkout-result');
+        setCheckoutState({ status: 'loaded', checkout: parsed.data });
+      } catch {
+        setCheckoutState({ status: 'invalid' });
+      }
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  if (checkoutState.status === 'loading') {
+    return (
+      <main
+        role="status"
+        aria-label="Carregando confirmação do pedido"
+        className="flex min-h-[50vh] items-center justify-center"
+      >
+        <span className="loading loading-spinner loading-lg text-primary-color" />
+      </main>
+    );
+  }
+
+  if (checkoutState.status === 'invalid') {
     return (
       <main className="mx-auto w-full max-w-[650px] px-5 py-16">
         <section
@@ -65,7 +92,7 @@ export default function OrderConfirmedPage() {
     );
   }
 
-  if (!storedCheckout) {
+  if (checkoutState.status === 'missing') {
     return (
       <main className="mx-auto w-full max-w-[650px] px-5 py-16">
         <section className="rounded-[22px] border border-[#e1d7c6] bg-[#fffdf9] p-8 sm:p-10">
@@ -86,15 +113,16 @@ export default function OrderConfirmedPage() {
     );
   }
 
-  const orderItems = storedCheckout.result.items.map((item) => ({
+  const { checkout } = checkoutState;
+  const orderItems = checkout.result.items.map((item) => ({
     key: item.productId,
     label: `${item.quantity}× ${item.name}`,
     total: item.subTotalCents,
   }));
-  const customerName = storedCheckout.customer.name;
-  const customerEmail = storedCheckout.customer.email;
-  const orderId = storedCheckout.result.orderId;
-  const orderTotal = storedCheckout.result.totalCents;
+  const customerName = checkout.customer.name;
+  const customerEmail = checkout.customer.email;
+  const orderId = checkout.result.orderId;
+  const orderTotal = checkout.result.totalCents;
 
   return (
     <main className="mx-auto w-full max-w-[650px] px-5 py-12 sm:py-16">
