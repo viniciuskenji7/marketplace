@@ -1,25 +1,39 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useDemoStore } from '../../app/providers';
 import { ProductCard } from '../product-card';
+import { useProducts } from '@/src/hooks/useProducts';
+import { useAddToCart } from '@/src/hooks/useCart';
 
 interface ProductListProps {
   search: string;
 }
 
 export const ProductList = ({ search }: ProductListProps) => {
-  const { products, cartItems, addToCart } = useDemoStore();
+  const { data = [], isPending } = useProducts();
+  const addToCartMutation = useAddToCart();
   const filteredProducts = useMemo(() => {
     const query = search.trim().toLocaleLowerCase('pt-BR');
-    if (!query) return products;
+    if (!query) return data;
 
-    return products.filter((product) =>
+    return data.filter((product) =>
       `${product.name} ${product.description}`
         .toLocaleLowerCase('pt-BR')
         .includes(query),
     );
-  }, [products, search]);
+  }, [data, search]);
+
+  if (isPending) {
+    return (
+      <div
+        role="status"
+        aria-label="Carregando produtos"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-background"
+      >
+        <span className="loading loading-spinner loading-xl text-primary-color" />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -32,8 +46,10 @@ export const ProductList = ({ search }: ProductListProps) => {
             <ProductCard
               key={product.id}
               product={product}
-              quantity={cartItems.find((item) => item.product.id === product.id)?.quantity ?? 0}
-              onAdd={addToCart}
+              quantity={data.find((item) => item.id === product.id)?.stock ?? 0}
+              onAdd={(productId) =>
+                addToCartMutation.mutate({ productId, quantity: 1 })
+              }
             />
           ))}
         </section>
