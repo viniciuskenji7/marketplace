@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { IsDecimal, IsInt, IsOptional, IsString } from "class-validator";
+import { IsInt, IsNumber, IsOptional, IsString } from "class-validator";
 
 
 @Injectable()
@@ -16,7 +16,7 @@ export class UpdateProductDTO {
     @IsOptional()
     image_url?: string;
 
-    @IsDecimal()
+    @IsNumber()
     @IsOptional()
     price?: number;
 

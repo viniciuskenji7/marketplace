@@ -1,4 +1,4 @@
-import { IsDecimal, IsInt, IsString, Min } from 'class-validator';
+import { IsInt, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateProductDTO {
     @IsString()
@@ -10,7 +10,7 @@ export class CreateProductDTO {
     @IsString()
     image_url: string;
 
-    @IsDecimal()
+    @IsNumber()
     @Min(0)
     price: number;
 
