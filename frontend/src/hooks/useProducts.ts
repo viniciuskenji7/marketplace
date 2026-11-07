@@ -6,7 +6,7 @@ import { fetchProducts } from "../services/products";
 export const productKey = 'products';
 
 export function useProducts() { 
-    return useQuery<Product>({
+    return useQuery<Product[]>({
         queryKey: [productKey],
         queryFn: fetchProducts
     })

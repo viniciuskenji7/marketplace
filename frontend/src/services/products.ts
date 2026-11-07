@@ -1,19 +1,12 @@
-import { Product } from "../types/Product";
-
-
+import type { Product } from "../types/Product";
+import { api } from "./api";
 
 export async function fetchProducts() {
-    const res = await fetch('/products');
-    if (!res.ok) throw new Error('Erro ao buscar produtos');
-    return res.json(); 
+    const res = await api.get<Product[]>('/produtos');
+    return res.data;
 }
 
 export async function registerProduct(product: Product) {
-    const res = await fetch(`/products`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(product)
-    });
-    if (!res.ok) throw new Error('Erro ao cadastrar produto');
-    return res.json();
+    const res = await api.post<Product>('/produtos', product);
+    return res.data;
 }

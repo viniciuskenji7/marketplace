@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 
 
 export const api = axios.create({
@@ -8,3 +8,13 @@ export const api = axios.create({
         'Content-Type': 'application/json'
     }
 });
+
+export function getErrorMessage(error: unknown): string {
+  if (isAxiosError(error)) {
+    if (!error.response) return 'Não foi possível conectar ao servidor.';
+    const message = error.response.data?.message;
+    if (Array.isArray(message)) return message.join('. '); // erros do class-validator vêm em lista
+    if (typeof message === 'string') return message;
+  }
+  return 'Ocorreu um erro inesperado. Tente novamente.';
+}
