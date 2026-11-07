@@ -2,18 +2,13 @@
 
 import { Search } from "lucide-react";
 import { useState } from "react";
-import { Navbar } from "../components/navbar";
 import { ProductList } from "../components/product-list";
-import { useCart } from "../hooks/useCart";
 
 export default function Home() {
   const [search, setSearch] = useState("");
-  const cartCount = useCart();
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar cartCount={cartCount.data?.items.length} />
-
       <main className="mx-auto max-w-[1010px] px-5 pb-16 pt-12 sm:px-8 sm:pt-14">
         <section className="mb-10 flex flex-col justify-between gap-7 sm:mb-12 sm:flex-row sm:items-end">
           <div>

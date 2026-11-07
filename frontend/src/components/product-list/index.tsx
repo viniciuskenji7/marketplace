@@ -1,9 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useAddToCart, useCart } from '@/src/hooks/useCart';
-import { useProducts } from '@/src/hooks/useProducts';
-import { getErrorMessage } from '@/src/services/api';
+import { useDemoStore } from '../../app/providers';
 import { ProductCard } from '../product-card';
 
 interface ProductListProps {
@@ -11,9 +9,7 @@ interface ProductListProps {
 }
 
 export const ProductList = ({ search }: ProductListProps) => {
-  const { data: products = [], isPending, error } = useProducts();
-  const { data: cart } = useCart();
-  const addToCart = useAddToCart();
+  const { products, cartItems, addToCart } = useDemoStore();
   const filteredProducts = useMemo(() => {
     const query = search.trim().toLocaleLowerCase('pt-BR');
     if (!query) return products;
@@ -25,16 +21,8 @@ export const ProductList = ({ search }: ProductListProps) => {
     );
   }, [products, search]);
 
-  if (isPending) return <p>Carregando...</p>;
-  if (error) return <p>{getErrorMessage(error)}</p>;
-
   return (
     <div>
-      {addToCart.error && (
-        <p role="alert" className="mb-4 text-sm text-error">
-          {getErrorMessage(addToCart.error)}
-        </p>
-      )}
       {filteredProducts.length > 0 ? (
         <section
           className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
@@ -44,12 +32,8 @@ export const ProductList = ({ search }: ProductListProps) => {
             <ProductCard
               key={product.id}
               product={product}
-              quantity={
-                cart?.items.find((item) => item.productId === product.id)?.quantity ?? 0
-              }
-              onAdd={(productId) =>
-                addToCart.mutate({ productId, quantity: 1 })
-              }
+              quantity={cartItems.find((item) => item.product.id === product.id)?.quantity ?? 0}
+              onAdd={addToCart}
             />
           ))}
         </section>

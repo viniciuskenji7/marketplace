@@ -16,7 +16,7 @@ const sceneColors: Record<ProductSceneName, { bag: string; pot: string; mug: str
   honey: { bag: "#d1b993", pot: "#ddd0b8", mug: "#b28c5e" },
 };
 
-function ProductScene({ scene }: { scene: ProductSceneName }) {
+export function ProductScene({ scene }: { scene: ProductSceneName }) {
   const colors = sceneColors[scene];
 
   return (
