@@ -4,7 +4,7 @@ import { OrderItem } from "../../order_items/entities/order_item.entity.js";
 
 @Entity('order')
 export class Order {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn("uuid")
     id: string;
 
     @OneToMany(() => OrderItem, (item) => item.order, { cascade: ['insert'] })

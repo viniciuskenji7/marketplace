@@ -19,7 +19,7 @@ export class OrderItem {
     product_name: string;
 
     @Column('int', {unsigned: true})
-    unit_price_cents: number
+    unit_price_cents: number;
 
     @Column('int', {unsigned: true})
     quantity: number;
