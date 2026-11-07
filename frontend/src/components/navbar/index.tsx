@@ -1,11 +1,14 @@
+'use client';
+
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import { useDemoStore } from "../../app/providers";
 
-interface NavbarProps {
-  cartCount?: number;
-}
+export const Navbar = () => {
+  const { cartItems } = useDemoStore();
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-export const Navbar = ({ cartCount = 0 }: NavbarProps) => (
+  return (
   <header className="border-b border-[#e4ddce] bg-background">
     <nav className="mx-auto flex h-[68px] max-w-[1010px] items-center justify-between px-5 sm:px-8">
       <Link
@@ -17,14 +20,14 @@ export const Navbar = ({ cartCount = 0 }: NavbarProps) => (
       </Link>
 
       <div className="flex items-center gap-5 text-[13px] text-[#59675d] sm:gap-8">
-        <a className="transition-colors hover:text-primary-color" href="#pedidos">
+        <Link className="transition-colors hover:text-primary-color" href="/pedidos">
           Pedidos
-        </a>
-        <a className="transition-colors hover:text-primary-color" href="#admin">
+        </Link>
+        <Link className="transition-colors hover:text-primary-color" href="/admin">
           Admin
-        </a>
-        <a
-          href="#carrinho"
+        </Link>
+        <Link
+          href="/carrinho"
           className="inline-flex h-10 items-center gap-2 rounded-full border border-[#e4ddce] bg-[#fffcf6] px-4 font-medium text-[#1b2a20] transition-colors hover:border-primary-color"
         >
           <ShoppingBag size={15} strokeWidth={1.8} />
@@ -34,8 +37,9 @@ export const Navbar = ({ cartCount = 0 }: NavbarProps) => (
               {cartCount}
             </span>
           )}
-        </a>
+        </Link>
       </div>
     </nav>
   </header>
-);
+  );
+};
