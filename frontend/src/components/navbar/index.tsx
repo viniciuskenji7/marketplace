@@ -2,15 +2,15 @@
 
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { useDemoStore } from "../../app/providers";
+import { useCart } from "@/src/hooks/useCart";
 
 export const Navbar = () => {
-  const { cartItems } = useDemoStore();
-  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const { data } = useCart();
+  const cartCount = data?.items.length ?? 0;
 
   return (
   <header className="border-b border-[#e4ddce] bg-background">
-    <nav className="mx-auto flex h-[68px] max-w-[1010px] items-center justify-between px-5 sm:px-8">
+    <nav className="mx-auto flex h-17 max-w-252.5 items-center justify-between px-5 sm:px-8">
       <Link
         href="/"
         className="font-display text-[25px] font-bold tracking-[-1.5px] text-primary-color"
