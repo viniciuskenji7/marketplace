@@ -20,6 +20,9 @@ export function ProductsTable({
   onEdit,
   onDelete,
 }: ProductsTableProps) {
+
+  const filteredProducts = products.filter(product => product.isActive === 1);
+
   return (
     <div className="overflow-x-auto rounded-[20px] border border-[#e1d7c6] bg-[#fffdf9]">
       <table className="w-full min-w-[700px] border-collapse text-left">
@@ -38,7 +41,7 @@ export function ProductsTable({
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <tr
               key={product.id}
               className="border-b border-[#e8dfd0] last:border-0"
@@ -88,7 +91,7 @@ export function ProductsTable({
               </td>
             </tr>
           ))}
-          {products.length === 0 && (
+          {filteredProducts.length === 0 && (
             <tr>
               <td
                 colSpan={4}

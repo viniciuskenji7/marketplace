@@ -14,10 +14,12 @@ import {
   useProducts,
   useUpdateProduct,
 } from '../../hooks/useProducts';
-
-function getErrorMessage(error: unknown, fallback: string) {
-  return error instanceof Error ? error.message : fallback;
-}
+import { getErrorMessage } from '../../utils/get-error-message';
+import {
+  showErrorToast,
+  showLoadingToast,
+  showSuccessToast,
+} from '../../utils/toast';
 
 export default function AdminPage() {
   const productsQuery = useProducts();
@@ -48,6 +50,7 @@ export default function AdminPage() {
 
   function submitProduct(values: ProductFormValues) {
     if (editingProduct) {
+      const toastId = showLoadingToast('Salvando alterações do produto...');
       const payload: updateProductDTO = {
         name: values.name,
         description: values.description,
@@ -57,11 +60,22 @@ export default function AdminPage() {
       };
       updateProduct.mutate(
         { id: editingProduct.id, product: payload },
-        { onSuccess: closeForm },
+        {
+          onSuccess: () => {
+            showSuccessToast('Produto atualizado com sucesso.', toastId);
+            closeForm();
+          },
+          onError: (error) =>
+            showErrorToast(
+              getErrorMessage(error, 'Não foi possível atualizar o produto.'),
+              toastId,
+            ),
+        },
       );
       return;
     }
 
+    const toastId = showLoadingToast('Criando produto...');
     const payload: RegisterProductDTO = {
       name: values.name,
       description: values.description,
@@ -69,7 +83,37 @@ export default function AdminPage() {
       stock: values.stock,
       image_url: values.imageUrl,
     };
-    createProduct.mutate(payload, { onSuccess: closeForm });
+    createProduct.mutate(payload, {
+      onSuccess: () => {
+        showSuccessToast('Produto criado com sucesso.', toastId);
+        closeForm();
+      },
+      onError: (error) =>
+        showErrorToast(
+          getErrorMessage(error, 'Não foi possível criar o produto.'),
+          toastId,
+        ),
+    });
+  }
+
+  function handleDeleteProduct(productId: number) {
+    const product = productsQuery.data?.find((item) => item.id === productId);
+    const toastId = showLoadingToast(
+      `Removendo ${product?.name ?? 'produto'} da vitrine...`,
+    );
+
+    deleteProduct.mutate(productId, {
+      onSuccess: () =>
+        showSuccessToast(
+          `${product?.name ?? 'Produto'} removido da vitrine.`,
+          toastId,
+        ),
+      onError: (error) =>
+        showErrorToast(
+          getErrorMessage(error, 'Não foi possível remover o produto.'),
+          toastId,
+        ),
+    });
   }
 
   const mutationError = createProduct.isError
@@ -145,7 +189,7 @@ export default function AdminPage() {
               deleteProduct.isPending ? deleteProduct.variables : undefined
             }
             onEdit={openEditForm}
-            onDelete={(productId) => deleteProduct.mutate(productId)}
+            onDelete={handleDeleteProduct}
           />
         </>
       )}

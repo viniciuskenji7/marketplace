@@ -23,6 +23,9 @@ export function ProductCard({ product, quantity, onAdd }: ProductCardProps) {
         <p className="mt-2 min-h-5 text-[13px] leading-5 text-[#788078]">
           {product.description}
         </p>
+        <p className="mt-2 min-h-5 text-[13px] leading-5 text-[#788078]">
+          Quantidade no estoque: <strong>{product.stock}</strong>
+        </p>
         <div className="mt-4 flex items-center justify-between gap-3">
           <span className="font-display text-[20px] font-bold text-primary-color">
             {Number(product.price).toLocaleString("pt-BR", {

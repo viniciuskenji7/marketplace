@@ -1,18 +1,13 @@
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import type { CartItem } from '../../types/Cart';
 import { ProductScene } from '../product-card/product-scene';
+import { formatCurrency } from '@/src/utils/format';
 
 interface CartItemsListProps {
   items: CartItem[];
   isUpdating: boolean;
   onQuantityChange: (productId: number, quantity: number) => void;
 }
-
-const formatPrice = (value: number) =>
-  Number(value).toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  });
 
 export function CartItemsList({
   items,
@@ -37,7 +32,7 @@ export function CartItemsList({
           <div className="min-w-[145px] flex-1">
             <h2 className="font-medium text-[#14261b]">{item.name}</h2>
             <p className="mt-1 text-[13px] text-[#788078]">
-              {formatPrice(item.unitPriceCents)} / un.
+              {formatCurrency(item.unitPriceCents)} / un.
             </p>
           </div>
           <div className="flex h-9 items-center rounded-full border border-[#e1d7c6] text-sm">
@@ -62,7 +57,7 @@ export function CartItemsList({
             </button>
           </div>
           <strong className="w-[82px] text-right text-[15px] font-semibold text-[#14261b]">
-            {formatPrice(item.subTotalCents)}
+            {formatCurrency(item.subTotalCents)}
           </strong>
           <button
             type="button"

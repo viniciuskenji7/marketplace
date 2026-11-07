@@ -3,25 +3,57 @@
 import { useMemo } from 'react';
 import { ProductCard } from '../product-card';
 import { useProducts } from '@/src/hooks/useProducts';
-import { useAddToCart } from '@/src/hooks/useCart';
+import { useAddToCart, useCart } from '@/src/hooks/useCart';
+import { getErrorMessage } from '@/src/utils/get-error-message';
+import {
+  showErrorToast,
+  showLoadingToast,
+  showSuccessToast,
+} from '@/src/utils/toast';
 
 interface ProductListProps {
   search: string;
 }
 
 export const ProductList = ({ search }: ProductListProps) => {
-  const { data = [], isPending } = useProducts();
+  const { data: products = [], isPending } = useProducts();
+  const { data: cart } = useCart();
   const addToCartMutation = useAddToCart();
   const filteredProducts = useMemo(() => {
     const query = search.trim().toLocaleLowerCase('pt-BR');
-    if (!query) return data;
 
-    return data.filter((product) =>
-      `${product.name} ${product.description}`
-        .toLocaleLowerCase('pt-BR')
-        .includes(query),
+    return products.filter(
+      (product) =>
+        product.isActive === 1 &&
+        (!query ||
+          `${product.name} ${product.description}`
+            .toLocaleLowerCase('pt-BR')
+            .includes(query)),
     );
-  }, [data, search]);
+  }, [products, search]);
+
+  function addProductToCart(productId: number) {
+    const product = products.find((item) => item.id === productId);
+    const toastId = showLoadingToast(
+      `Adicionando ${product?.name ?? 'produto'} ao carrinho...`,
+    );
+
+    addToCartMutation.mutate(
+      { productId, quantity: 1 },
+      {
+        onSuccess: () =>
+          showSuccessToast(
+            `${product?.name ?? 'Produto'} adicionado ao carrinho.`,
+            toastId,
+          ),
+        onError: (error) =>
+          showErrorToast(
+            getErrorMessage(error, 'Não foi possível adicionar o produto ao carrinho.'),
+            toastId,
+          ),
+      },
+    );
+  }
 
   if (isPending) {
     return (
@@ -46,10 +78,8 @@ export const ProductList = ({ search }: ProductListProps) => {
             <ProductCard
               key={product.id}
               product={product}
-              quantity={data.find((item) => item.id === product.id)?.stock ?? 0}
-              onAdd={(productId) =>
-                addToCartMutation.mutate({ productId, quantity: 1 })
-              }
+              quantity={cart?.items.find((item) => item.productId === product.id)?.quantity ?? 0}
+              onAdd={addProductToCart}
             />
           ))}
         </section>

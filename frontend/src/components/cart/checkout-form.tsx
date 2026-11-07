@@ -6,6 +6,7 @@ import {
   checkoutSchema,
   type CheckoutFormValues,
 } from '../../schemas/forms';
+import { showErrorToast } from '../../utils/toast';
 
 interface CheckoutFormProps {
   total: number;
@@ -37,7 +38,9 @@ export function CheckoutForm({
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit, () =>
+        showErrorToast('Revise os campos destacados antes de continuar.'),
+      )}
       className="rounded-[20px] border border-[#e1d7c6] bg-[#fffdf9] p-6 shadow-[0_8px_24px_rgba(47,39,23,0.06)] sm:p-7"
     >
       <h2 className="font-display text-[21px] font-bold text-[#14261b]">

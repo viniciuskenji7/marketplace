@@ -8,6 +8,7 @@ import {
   orderSearchSchema,
   type OrderSearchFormValues,
 } from '../../schemas/forms';
+import { showErrorToast } from '../../utils/toast';
 
 export default function OrdersPage() {
   const [searchedEmail, setSearchedEmail] = useState('');
@@ -24,7 +25,7 @@ export default function OrdersPage() {
   function searchOrders(values: OrderSearchFormValues) {
     setSearchedEmail(values.email.trim().toLocaleLowerCase());
     setSearched(true);
-    // Conecte aqui a chamada à API de busca de pedidos.
+    showErrorToast('A busca de pedidos ainda não está conectada à API.');
   }
 
   return (
@@ -36,7 +37,9 @@ export default function OrdersPage() {
         Digite o e-mail usado na compra.
       </p>
       <form
-        onSubmit={handleSubmit(searchOrders)}
+        onSubmit={handleSubmit(searchOrders, () =>
+          showErrorToast('Informe um endereço de e-mail válido.'),
+        )}
         className="mt-7 flex max-w-[520px] gap-2"
       >
         <input

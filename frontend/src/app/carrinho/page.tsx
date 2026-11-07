@@ -7,6 +7,12 @@ import { CheckoutForm } from '../../components/cart/checkout-form';
 import type { CheckoutFormValues } from '../../schemas/forms';
 import type { CheckoutResult } from '../../types/Checkout';
 import { useCart, useCheckout, useUpdateCartItem } from '../../hooks/useCart';
+import { getErrorMessage } from '../../utils/get-error-message';
+import {
+  showErrorToast,
+  showLoadingToast,
+  showSuccessToast,
+} from '../../utils/toast';
 
 export default function CartPage() {
   const router = useRouter();
@@ -16,18 +22,48 @@ export default function CartPage() {
   const items = cartQuery.data?.items ?? [];
 
   function handleQuantityChange(productId: number, quantity: number) {
-    updateCartItem.mutate({ productId, quantity });
+    const item = items.find((cartItem) => cartItem.productId === productId);
+    const toastId = showLoadingToast(
+      quantity === 0
+        ? `Removendo ${item?.name ?? 'produto'} do carrinho...`
+        : 'Atualizando quantidade...',
+    );
+
+    updateCartItem.mutate(
+      { productId, quantity },
+      {
+        onSuccess: () =>
+          showSuccessToast(
+            quantity === 0
+              ? `${item?.name ?? 'Produto'} removido do carrinho.`
+              : 'Quantidade atualizada.',
+            toastId,
+          ),
+        onError: (error) =>
+          showErrorToast(
+            getErrorMessage(error, 'Não foi possível atualizar o carrinho.'),
+            toastId,
+          ),
+      },
+    );
   }
 
   function handleCheckout(values: CheckoutFormValues) {
+    const toastId = showLoadingToast('Finalizando seu pedido...');
     checkout.mutate(values, {
       onSuccess: (result: CheckoutResult) => {
         sessionStorage.setItem(
           'marketplace-checkout-result',
           JSON.stringify({ result, customer: values }),
         );
+        showSuccessToast('Pedido realizado com sucesso.', toastId);
         router.push('/pedido-confirmado');
       },
+      onError: (error) =>
+        showErrorToast(
+          getErrorMessage(error, 'Não foi possível finalizar seu pedido.'),
+          toastId,
+        ),
     });
   }
 

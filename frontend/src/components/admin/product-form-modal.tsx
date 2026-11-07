@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema, type ProductFormValues } from '../../schemas/forms';
 import type { Product } from '../../types/Product';
+import { showErrorToast } from '../../utils/toast';
 
 interface ProductFormModalProps {
   product: Product | null;
@@ -95,7 +96,9 @@ export function ProductFormModal({
         </div>
 
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit, () =>
+            showErrorToast('Revise os campos destacados do produto.'),
+          )}
           className="space-y-4"
           noValidate
         >
