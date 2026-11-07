@@ -46,6 +46,7 @@ export class ProductService {
             throw new NotFoundException(`O produto com id ${id} não foi encontrado`);
         }
 
-        return await this.productRepository.remove(product);
+        product.is_active = 0;
+        return await this.productRepository.save(product);
     }
 }
