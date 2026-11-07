@@ -1,3 +1,4 @@
+import { RegisterProductDTO } from "../dto/product/registerProductDTO";
 import type { Product } from "../types/Product";
 import { api } from "./api";
 
@@ -6,7 +7,7 @@ export async function fetchProducts() {
     return res.data;
 }
 
-export async function registerProduct(product: Product) {
-    const res = await api.post<Product>('/produtos', product);
+export async function registerProduct(product: RegisterProductDTO) {
+    const res = await api.post<RegisterProductDTO>('/produtos', product);
     return res.data;
 }
