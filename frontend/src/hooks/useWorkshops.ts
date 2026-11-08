@@ -5,6 +5,7 @@ import {
   deleteWorkshopSession,
   fetchWorkshopSessions,
   fetchWorkshops,
+  WORKSHOPS_PER_PAGE,
   updateWorkshop,
   updateWorkshopSession,
 } from '../services/workshops';
@@ -19,7 +20,7 @@ import type {
 export const workshopKey = 'workshops';
 export const workshopSessionsKey = 'workshop-sessions';
 
-export function useWorkshops(page: number, limit = 12) {
+export function useWorkshops(page: number, limit = WORKSHOPS_PER_PAGE) {
   return useQuery<WorkshopPage>({
     queryKey: [workshopKey, page, limit],
     queryFn: () => fetchWorkshops(page, limit),

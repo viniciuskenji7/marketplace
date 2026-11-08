@@ -2,8 +2,8 @@
 
 import { CalendarDays, Clock3, MapPin, Plus, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import type { Workshop, WorkshopSession } from '../types/Workshop';
-import { formatCentsAsCurrency } from '../utils/format';
+import type { Workshop, WorkshopSession } from '../../types/Workshop';
+import { formatCentsAsCurrency } from '../../utils/format';
 
 interface WorkshopCardProps {
   workshop: Workshop;

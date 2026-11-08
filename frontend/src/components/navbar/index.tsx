@@ -9,11 +9,11 @@ export const Navbar = () => {
   const cartCount = data?.items.reduce((count, item) => count + item.quantity, 0) ?? 0;
 
   return (
-  <header className="border-b border-[#e4ddce] bg-background">
+  <header className="sticky top-0 z-50 border-b border-[#e4ddce] bg-background">
     <nav className="mx-auto flex h-17 max-w-252.5 items-center justify-between px-5 sm:px-8">
       <Link
         href="/"
-        className="font-display text-[25px] font-bold tracking-[-1.5px] text-primary-color"
+        className="font-display text-4xl font-bold tracking-[-1.5px] text-primary-color"
         aria-label="Feira - página inicial"
       >
         feira<span className="text-secondary-color">.</span>

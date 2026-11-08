@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useAddToCart } from '../hooks/useCart';
 import { useWorkshops } from '../hooks/useWorkshops';
+import { WORKSHOPS_PER_PAGE } from '../services/workshops';
 import type { Workshop } from '../types/Workshop';
 import { getErrorMessage } from '../utils/get-error-message';
 import {
@@ -10,12 +11,12 @@ import {
   showLoadingToast,
   showSuccessToast,
 } from '../utils/toast';
-import { PaginationControls } from './pagination-controls';
-import { WorkshopCard } from './workshop-card';
+import { PaginationControls } from './pagination/pagination-controls';
+import { WorkshopCard } from './workshop/workshop-card';
 
 export function WorkshopList() {
   const [page, setPage] = useState(1);
-  const workshopsQuery = useWorkshops(page, 12);
+  const workshopsQuery = useWorkshops(page, WORKSHOPS_PER_PAGE);
   const addToCart = useAddToCart();
 
   function addReservation(

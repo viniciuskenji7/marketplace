@@ -4,7 +4,7 @@ import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { ProductFormModal } from '../../components/admin/product-form-modal';
 import { ProductsTable } from '../../components/admin/products-table';
-import { PaginationControls } from '../../components/pagination-controls';
+import { PaginationControls } from '../../components/pagination/pagination-controls';
 import type { ProductFormValues } from '../../schemas/forms';
 import type { RegisterProductDTO } from '../../dto/product/registerProductDTO';
 import type { updateProductDTO } from '../../dto/product/updateProductDTO';
@@ -22,10 +22,11 @@ import {
   showSuccessToast,
 } from '../../utils/toast';
 import { AdminNavigation } from '../../components/admin/admin-navigation';
+import { PRODUCTS_PER_PAGE } from '../../services/products';
 
 export default function AdminPage() {
   const [page, setPage] = useState(1);
-  const productsQuery = useProductCatalog(page, 12);
+  const productsQuery = useProductCatalog(page, PRODUCTS_PER_PAGE);
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();

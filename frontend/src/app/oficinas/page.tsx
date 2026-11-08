@@ -1,5 +1,5 @@
-import { CatalogNavigation } from '../../components/catalog-navigation';
-import { WorkshopList } from '../../components/workshop-list';
+import { CatalogNavigation } from '../../components/catalog/catalog-navigation';
+import { WorkshopList } from '../../components/workshop/workshop-list';
 
 export default function WorkshopsPage() {
   return (

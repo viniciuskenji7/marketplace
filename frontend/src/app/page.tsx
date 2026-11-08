@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { ProductList } from "../components/product-list";
-import { CatalogNavigation } from "../components/catalog-navigation";
+import { CatalogNavigation } from "../components/catalog/catalog-navigation";
 
 export default function Home() {
   const [search, setSearch] = useState("");
