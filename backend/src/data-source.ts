@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { OrderItem } from './order_items/entities/order_item.entity.js';
 import { Order } from './order/entities/order.entity.js';
 import { Product } from './product/entities/product.entity.js';
+import { WorkshopSession } from './workshop/entities/workshop-session.entity.js';
+import { WorkshopReservation } from './workshop/entities/workshop-reservation.entity.js';
 
 const requiredEnvironmentVariables = [
   'DB_HOST',
@@ -29,7 +31,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [Product, Order, OrderItem],
+  entities: [Product, Order, OrderItem, WorkshopSession, WorkshopReservation],
   migrations: [
     fileURLToPath(new URL('./migrations/*.{js,ts}', import.meta.url)).replace(
       /\\/g,

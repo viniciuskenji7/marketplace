@@ -11,6 +11,7 @@ import { OrderModule } from './order/order.module.js';
 import { MailModule } from './mail/mail.module.js';
 import { CartMiddleware } from './cart/middleware/cart-id.middleware.js';
 import { fileURLToPath } from 'node:url';
+import { WorkshopModule } from './workshop/workshop.module.js';
 
 const migrationsPath = fileURLToPath(
   new URL('./migrations/*.{js,ts}', import.meta.url),
@@ -51,6 +52,7 @@ const migrationsPath = fileURLToPath(
       })
     }),
     ProductModule,
+    WorkshopModule,
     CartModule,
     OrderModule,
     MailModule,

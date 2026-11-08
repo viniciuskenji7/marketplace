@@ -10,6 +10,9 @@ export class Product {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column('enum', { enum: ['physical', 'workshop'], default: 'physical' })
+    product_type?: 'physical' | 'workshop';
+
     @Column('varchar', { length: 255 })
     name: string;
 
@@ -28,6 +31,12 @@ export class Product {
 
     @Column('int', { unsigned: true, default: 0 })
     stock: number;
+
+    @Column('int', { unsigned: true, nullable: true })
+    duration_minutes?: number | null;
+
+    @Column('varchar', { length: 255, nullable: true })
+    location?: string | null;
 
     @Column('tinyint', { default: 1 })
     is_active: number;
