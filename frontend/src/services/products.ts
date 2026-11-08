@@ -5,7 +5,6 @@ import { ProductApiResponse } from "../types/ProductApiResponse";
 import type { PaginatedResponse } from "../types/PaginatedResponse";
 import { api } from "./api";
 
-export const PRODUCTS_PER_PAGE = 5;
 
 function mapProduct(product: ProductApiResponse): Product {
     return {
@@ -20,11 +19,7 @@ function mapProduct(product: ProductApiResponse): Product {
     };
 }
 
-export async function fetchProductPage(
-    page = 1,
-    limit = PRODUCTS_PER_PAGE,
-    search = '',
-) {
+export async function fetchProductPage(page = 1, limit = 12, search = '') {
     const res = await api.get<PaginatedResponse<ProductApiResponse>>('/produtos', {
         params: { page, limit, type: 'physical', ...(search ? { q: search } : {}) },
     });
@@ -32,11 +27,10 @@ export async function fetchProductPage(
 }
 
 export async function fetchProducts() {
-    const firstPage = await fetchProductPage(1, PRODUCTS_PER_PAGE);
+    const firstPage = await fetchProductPage(1, 12);
     const remainingPages = await Promise.all(
-        Array.from(
-            { length: Math.max(firstPage.totalPages - 1, 0) },
-            (_, index) => fetchProductPage(index + 2, PRODUCTS_PER_PAGE),
+        Array.from({ length: Math.max(firstPage.totalPages - 1, 0) }, (_, index) =>
+            fetchProductPage(index + 2, 12),
         ),
     );
     return [firstPage, ...remainingPages].flatMap((page) => page.items);

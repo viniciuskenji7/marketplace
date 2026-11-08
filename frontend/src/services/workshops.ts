@@ -10,8 +10,6 @@ import type {
   WorkshopSessionUpdateInput,
 } from '../types/Workshop';
 
-export const WORKSHOPS_PER_PAGE = 5;
-
 function mapSession(session: WorkshopSessionApiResponse): WorkshopSession {
   return {
     id: session.id,
@@ -37,10 +35,7 @@ function mapWorkshop(workshop: WorkshopApiResponse): Workshop {
   };
 }
 
-export async function fetchWorkshops(
-  page = 1,
-  limit = WORKSHOPS_PER_PAGE,
-): Promise<WorkshopPage> {
+export async function fetchWorkshops(page = 1, limit = 12): Promise<WorkshopPage> {
   const response = await api.get<{
     items: WorkshopApiResponse[];
     total: number;

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { ProductCard } from '../product-card';
 import { useProductCatalog } from '@/src/hooks/useProducts';
 import { useAddToCart, useCart } from '@/src/hooks/useCart';
-import { PRODUCTS_PER_PAGE } from '@/src/services/products';
 import { PaginationControls } from '../pagination/pagination-controls';
 import { getErrorMessage } from '@/src/utils/get-error-message';
 import {
@@ -22,7 +21,7 @@ export const ProductList = ({ search }: ProductListProps) => {
   const page = pagination.search === search ? pagination.page : 1;
   const { data, isPending, isError, error, refetch } = useProductCatalog(
     page,
-    PRODUCTS_PER_PAGE,
+    12,
     search.trim(),
   );
   const products = data?.items ?? [];
