@@ -174,7 +174,7 @@ export default function AdminPage() {
               <p className="text-sm text-[#69746c]">
                 {getErrorMessage(
                   productsQuery.error,
-                  'Não foi possível carregar os produtos.',
+                  'Não foi possível carregar os produtos',
                 )}
               </p>
               <button
