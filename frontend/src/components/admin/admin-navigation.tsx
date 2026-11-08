@@ -17,7 +17,10 @@ export function AdminNavigation({
   ];
 
   return (
-    <aside aria-label="Navegação da administração" className="md:sticky md:top-6 md:self-start">
+    <aside
+      aria-label="Navegação da administração"
+      className="md:sticky md:top-[5.75rem] md:self-start"
+    >
       <p className="mb-3 text-xs font-semibold uppercase tracking-[1.4px] text-[#788078]">
         Gerenciar
       </p>

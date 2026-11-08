@@ -7,7 +7,10 @@ export function CatalogNavigation({ active }: { active: 'products' | 'workshops'
   ];
 
   return (
-    <aside aria-label="Catálogo" className="md:sticky md:top-6 md:self-start">
+    <aside
+      aria-label="Catálogo"
+      className="md:sticky md:top-[5.75rem] md:self-start"
+    >
       <nav className="flex gap-2 md:flex-col">
         {links.map((link) => (
           <Link

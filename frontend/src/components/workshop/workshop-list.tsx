@@ -88,7 +88,7 @@ export function WorkshopList() {
   const pageData = workshopsQuery.data;
 
   return (
-    <>
+    <div>
       {pageData.items.length > 0 ? (
         <section
           aria-label="Oficinas"
@@ -114,6 +114,6 @@ export function WorkshopList() {
         itemLabel="oficinas"
         onPageChange={setPage}
       />
-    </>
+    </div>
   );
 }
