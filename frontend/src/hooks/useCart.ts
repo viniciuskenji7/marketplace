@@ -114,7 +114,7 @@ export function useUpdateCartItem() {
             return { previousCart };
         },
         onSuccess: (cart) => queryClient.setQueryData([cartKey], cart),
-        onError: (_error, _variables, context) => {
+        onError: (error, variables, context) => {
             if (context?.previousCart) {
                 queryClient.setQueryData([cartKey], context.previousCart);
             }
