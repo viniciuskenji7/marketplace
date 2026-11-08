@@ -40,7 +40,7 @@ export function ProductCard({ product, quantity, onAdd }: ProductCardProps) {
 
   return (
     <article
-      className={`group overflow-hidden rounded-[19px] border shadow-[0_8px_24px_rgba(47,39,23,0.07)] transition-all duration-200 ${
+      className={`group flex h-full flex-col overflow-hidden rounded-[19px] border shadow-[0_8px_24px_rgba(47,39,23,0.07)] transition-all duration-200 ${
         isOutOfStock
           ? 'border-[#d3cec3] bg-[#f0ede6]'
           : 'border-[#e8dfd0] bg-[#fffdf9] hover:-translate-y-1'
@@ -67,16 +67,16 @@ export function ProductCard({ product, quantity, onAdd }: ProductCardProps) {
           </span>
         )}
       </div>
-      <div className={`p-5 ${isOutOfStock ? 'text-[#6b706b]' : ''}`}>
-        <h2 className="font-display text-[18px] font-bold leading-tight tracking-[-.25px] text-[#14261b]">
+      <div className={`flex flex-1 flex-col p-5 ${isOutOfStock ? 'text-[#6b706b]' : ''}`}>
+        <h2 className="line-clamp-2 min-h-[2.4em] font-display text-[18px] font-bold leading-tight tracking-[-.25px] text-[#14261b]">
           {product.name}
         </h2>
-        <p className="mt-2 min-h-5 text-[13px] leading-5 text-[#788078]">
+        <p className="mt-2 line-clamp-2 min-h-10 text-[13px] leading-5 text-[#788078]">
           {product.description}
         </p>
-        <div className="mt-4 flex items-center justify-between gap-3">
+        <div className="mt-auto flex flex-col items-stretch gap-3 pt-4">
           <span
-            className={`font-display text-[20px] font-bold ${
+            className={`whitespace-nowrap font-display text-[20px] font-bold ${
               isOutOfStock ? 'text-[#777c75]' : 'text-primary-color'
             }`}
           >
@@ -88,7 +88,7 @@ export function ProductCard({ product, quantity, onAdd }: ProductCardProps) {
           <button
             type="button"
             onClick={() => onAdd(product.id)}
-            className={`inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[12px] font-medium shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${
+            className={`inline-flex h-9 w-full items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[11px] font-medium shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${
               isOutOfStock
                 ? 'cursor-not-allowed bg-[#d5d2ca] text-[#777a74]'
                 : 'bg-primary-color text-white hover:bg-[#123a23] focus-visible:outline-primary-color'
