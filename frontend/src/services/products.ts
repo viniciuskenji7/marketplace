@@ -2,6 +2,7 @@ import { RegisterProductDTO } from "../dto/product/registerProductDTO";
 import { updateProductDTO } from "../dto/product/updateProductDTO";
 import type { Product } from "../types/Product";
 import { ProductApiResponse } from "../types/ProductApiResponse";
+import type { PaginatedResponse } from "../types/PaginatedResponse";
 import { api } from "./api";
 
 
@@ -18,9 +19,21 @@ function mapProduct(product: ProductApiResponse): Product {
     };
 }
 
+export async function fetchProductPage(page = 1, limit = 12, search = '') {
+    const res = await api.get<PaginatedResponse<ProductApiResponse>>('/produtos', {
+        params: { page, limit, type: 'physical', ...(search ? { q: search } : {}) },
+    });
+    return { ...res.data, items: res.data.items.map(mapProduct) };
+}
+
 export async function fetchProducts() {
-    const res = await api.get<ProductApiResponse[]>('/produtos');
-    return res.data.map(mapProduct);
+    const firstPage = await fetchProductPage(1, 12);
+    const remainingPages = await Promise.all(
+        Array.from({ length: Math.max(firstPage.totalPages - 1, 0) }, (_, index) =>
+            fetchProductPage(index + 2, 12),
+        ),
+    );
+    return [firstPage, ...remainingPages].flatMap((page) => page.items);
 }
 
 export async function registerProduct(product: RegisterProductDTO) {

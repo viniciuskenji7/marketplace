@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { ProductList } from "../components/product-list";
+import { CatalogNavigation } from "../components/catalog-navigation";
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -10,7 +11,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-[1010px] px-5 pb-16 pt-12 sm:px-8 sm:pt-14">
-        <section className="mb-10 flex flex-col justify-between gap-7 sm:mb-12 sm:flex-row sm:items-end">
+        <section className="mb-10 flex flex-col justify-between gap-7 sm:mb-10 sm:flex-row sm:items-end">
           <div>
             <p className="mb-4 text-[12px] font-semibold uppercase tracking-[1.6px] text-secondary-color">
               Mini marketplace
@@ -35,7 +36,10 @@ export default function Home() {
           </label>
         </section>
 
-        <ProductList search={search} />
+        <div className="grid gap-7 md:grid-cols-[160px_minmax(0,1fr)]">
+          <CatalogNavigation active="products" />
+          <ProductList search={search} />
+        </div>
       </main>
     </div>
   );

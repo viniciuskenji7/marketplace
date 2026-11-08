@@ -6,7 +6,7 @@ import { useCart } from "@/src/hooks/useCart";
 
 export const Navbar = () => {
   const { data } = useCart();
-  const cartCount = data?.items.length ?? 0;
+  const cartCount = data?.items.reduce((count, item) => count + item.quantity, 0) ?? 0;
 
   return (
   <header className="border-b border-[#e4ddce] bg-background">
