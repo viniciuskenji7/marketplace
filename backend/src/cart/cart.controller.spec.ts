@@ -8,7 +8,16 @@ describe('CartController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CartController],
-      providers: [CartService],
+      providers: [
+        {
+          provide: CartService,
+          useValue: {
+            getCart: vi.fn(),
+            addItem: vi.fn(),
+            updateItem: vi.fn(),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<CartController>(CartController);

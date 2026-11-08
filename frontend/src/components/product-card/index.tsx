@@ -62,7 +62,7 @@ export function ProductCard({ product, quantity, onAdd }: ProductCardProps) {
           </span>
         ) : null}
         {isNew && (
-          <span className="absolute left-3 top-3 rounded-full bg-emerald-700 px-3 py-1.5 text-xs font-semibold text-white">
+          <span className="absolute right-3 top-3 rounded-full bg-emerald-700 px-3 py-1.5 text-xs font-semibold text-white">
             Novo
           </span>
         )}

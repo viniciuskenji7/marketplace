@@ -8,7 +8,12 @@ describe('OrderController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OrderController],
-      providers: [OrderService],
+      providers: [
+        {
+          provide: OrderService,
+          useValue: { checkout: vi.fn() },
+        },
+      ],
     }).compile();
 
     controller = module.get<OrderController>(OrderController);

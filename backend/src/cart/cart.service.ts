@@ -16,7 +16,7 @@ export class CartService {
     ){}
 
     async getCart(cartId: string): Promise<CartView> {
-        const cart = await this.cart.get(cartId);
+        const cart = this.cart.get(cartId);
         
         if (!cart || cart.size === 0) return {items: [], totalCents: 0};
 
@@ -52,7 +52,7 @@ export class CartService {
     async addItem(cartId: string, productId: number, quantity: number) {
         const product = await this.findActiveProduct(productId);
 
-        const cart = await this.getOrCreate(cartId);
+        const cart = this.getOrCreate(cartId);
         const newQuantity = ( cart.get(productId) ?? 0 ) + quantity;
         this.assertStock(product, newQuantity);
         cart.set(productId, newQuantity);
