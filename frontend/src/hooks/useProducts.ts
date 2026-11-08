@@ -8,7 +8,7 @@ import {
     updateProduct,
 } from "../services/products";
 import type { RegisterProductDTO } from "../dto/product/registerProductDTO";
-import { fetchProductPage } from "../services/products";
+import { fetchProductPage, PRODUCTS_PER_PAGE } from "../services/products";
 import type { PaginatedResponse } from "../types/PaginatedResponse";
 
 export const productKey = 'products';
@@ -36,7 +36,11 @@ export function useProducts() {
     })
 }
 
-export function useProductCatalog(page: number, limit = 12, search = '') {
+export function useProductCatalog(
+    page: number,
+    limit = PRODUCTS_PER_PAGE,
+    search = '',
+) {
     return useQuery<PaginatedResponse<Product>>({
         queryKey: [productKey, 'catalog', page, limit, search],
         queryFn: () => fetchProductPage(page, limit, search),
