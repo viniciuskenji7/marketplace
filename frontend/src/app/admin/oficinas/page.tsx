@@ -19,10 +19,11 @@ import {
   showSuccessToast,
 } from '../../../utils/toast';
 import { PaginationControls } from '../../../components/pagination/pagination-controls';
+import { WORKSHOPS_PER_PAGE } from '@/src/services/workshops';
 
 export default function AdminWorkshopsPage() {
   const [page, setPage] = useState(1);
-  const workshopsQuery = useWorkshops(page, 12);
+  const workshopsQuery = useWorkshops(page, WORKSHOPS_PER_PAGE);
   const createWorkshop = useCreateWorkshop();
   const updateWorkshop = useUpdateWorkshop();
   const [editingWorkshop, setEditingWorkshop] = useState<Workshop | null>(null);
