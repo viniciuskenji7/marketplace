@@ -31,6 +31,23 @@
 $ npm install
 ```
 
+Create `.env` from `.env.example` and set the database, frontend origin, and any
+optional email/observability credentials. `.env` is ignored by Git; do not put
+real credentials in `.env.example`.
+
+## API security defaults
+
+- CORS allows only the single HTTP(S) origin in `FRONTEND_URL` and requires
+  credentials. The backend refuses to start if the value is missing or is not
+  an origin.
+- JSON and URL-encoded request bodies are limited to 10 KB.
+- Requests are limited to 100 per minute per client IP globally; checkout at
+  `/finalizar-compra` is limited to 5 per minute per client IP.
+- These rate limits use in-memory storage. Deployments with multiple backend
+  instances should configure shared throttler storage so limits apply across
+  instances. Behind a reverse proxy, configure Express `trust proxy` for the
+  known proxy hops so limits use the actual client IP.
+
 ## Compile and run the project
 
 ```bash

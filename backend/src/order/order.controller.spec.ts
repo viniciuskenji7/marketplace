@@ -22,4 +22,18 @@ describe('OrderController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  it('limits checkout to five requests per minute', () => {
+    const checkoutHandler = Object.getOwnPropertyDescriptor(
+      OrderController.prototype,
+      'checkout',
+    )?.value;
+
+    expect(Reflect.getMetadata('THROTTLER:LIMITdefault', checkoutHandler)).toBe(
+      5,
+    );
+    expect(Reflect.getMetadata('THROTTLER:TTLdefault', checkoutHandler)).toBe(
+      60_000,
+    );
+  });
 });

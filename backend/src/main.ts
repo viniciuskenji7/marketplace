@@ -1,20 +1,23 @@
 
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module.js';
 import { ConfigService } from '@nestjs/config';
+import { getAllowedFrontendOrigin } from './common/config/frontend-origin.js';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { bodyParser: false });
 
     const configService = app.get(ConfigService);
 
     app.use(helmet());
-
     app.use(cookieParser());
+    app.use(json({ limit: '10kb' }));
+    app.use(urlencoded({ extended: true, limit: '10kb' }));
 
     app.useGlobalPipes(
         new ValidationPipe({
@@ -25,7 +28,7 @@ async function bootstrap() {
     );
 
     app.enableCors({
-        origin: configService.get<string>('FRONTEND_URL'),
+        origin: getAllowedFrontendOrigin(configService.get<string>('FRONTEND_URL')),
         credentials: true,
     });
 
