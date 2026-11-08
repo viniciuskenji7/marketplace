@@ -176,12 +176,17 @@ Abra <http://localhost:3000>. A API fica em <http://localhost:3001>.
 | Método | Endpoint | Finalidade |
 |---|---|---|
 | `GET` | `/produtos?page=1&limit=5&type=physical&q=termo` | Listar, paginar e buscar produtos |
+| `POST` | `/produtos` | Criar produto |
+| `PUT` | `/produtos/:id` | Atualizar produto |
+| `DELETE` | `/produtos/:id` | Remover produto |
 | `POST`, `PUT` | `/carrinho` | Adicionar ou atualizar/remover itens |
 | `GET` | `/carrinho` | Consultar o carrinho associado ao cookie |
 | `POST` | `/finalizar-compra` | Confirmar pedido e registrar a venda |
 | `GET` | `/oficinas?page=1&limit=5` | Listar oficinas e sessões disponíveis |
 | `POST`, `PUT` | `/oficinas` e `/oficinas/:id` | Criar e atualizar oficinas |
 | `POST`, `GET`, `PUT`, `DELETE` | `/oficinas/:id/sessoes` e `/oficinas/sessoes/:sessionId` | Consultar e administrar sessões |
+
+O `DELETE /produtos/:id` realiza uma **exclusão lógica**: em vez de apagar o registro do banco, define `is_active` como `0`. Produtos inativos deixam de aparecer na listagem do catálogo e não podem ser comprados, mas seus dados permanecem armazenados. Isso preserva o histórico de pedidos e evita quebrar referências a esses produtos. Atualmente, a API não oferece um endpoint para reativar um produto.
 
 ## Testes e verificações
 
