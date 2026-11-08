@@ -6,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product/product.module.js';
 import { CartModule } from './cart/cart.module.js';
 import { OrderModule } from './order/order.module.js';
-import { OrderItemsModule } from './order_items/order_items.module.js';
 import { MailModule } from './mail/mail.module.js';
 import { CartMiddleware } from './cart/middleware/cart-id.middleware.js';
 import { fileURLToPath } from 'node:url';
@@ -45,7 +44,6 @@ const migrationsPath = fileURLToPath(
     ProductModule,
     CartModule,
     OrderModule,
-    OrderItemsModule,
     MailModule,
   ],
   controllers: [AppController],
