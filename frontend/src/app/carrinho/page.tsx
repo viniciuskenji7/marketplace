@@ -67,6 +67,21 @@ export default function CartPage() {
     });
   }
 
+  if (checkout.isPending || checkout.isSuccess) {
+    return (
+      <main
+        role="status"
+        aria-label="Finalizando pedido"
+        className="flex min-h-[calc(100vh-68px)] flex-col items-center justify-center gap-4 px-5 text-center"
+      >
+        <span className="loading loading-spinner loading-lg text-primary-color" />
+        <p className="text-sm text-[#69746c]">
+          Estamos processando seu pedido...
+        </p>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto min-h-[calc(100vh-68px)] w-full max-w-[1110px] px-5 pb-16 pt-9 sm:px-8 sm:pt-10">
       <h1 className="font-display text-3xl font-bold tracking-tight text-[#13251a] sm:text-[38px]">
