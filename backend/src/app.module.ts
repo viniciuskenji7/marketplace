@@ -9,6 +9,12 @@ import { OrderModule } from './order/order.module.js';
 import { OrderItemsModule } from './order_items/order_items.module.js';
 import { MailModule } from './mail/mail.module.js';
 import { CartMiddleware } from './cart/middleware/cart-id.middleware.js';
+import { fileURLToPath } from 'node:url';
+
+const migrationsPath = fileURLToPath(
+  new URL('./migrations/*.{js,ts}', import.meta.url),
+).replace(/\\/g, '/');
+
 @Module({
   imports: [
     // Carrega as variaveis do .env
@@ -24,15 +30,16 @@ import { CartMiddleware } from './cart/middleware/cart-id.middleware.js';
         type: 'mysql',
 
         host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
+        port: Number(configService.get<string>('DB_PORT')),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
 
         autoLoadEntities: true,
 
-        synchronize: true,
-        migrationsRun: true
+        synchronize: false,
+        migrations: [migrationsPath],
+        migrationsRun: true,
       })
     }),
     ProductModule,
