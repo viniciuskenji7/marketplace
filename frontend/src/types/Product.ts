@@ -6,5 +6,6 @@ export interface Product {
   stock: number;
   isActive: number;
   imageUrl: string;
+  createdAt: string;
   scene?: "ceramic" | "linen" | "stone" | "honey";
 }

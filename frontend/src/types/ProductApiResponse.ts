@@ -7,4 +7,5 @@ export interface ProductApiResponse {
     price: number | string;
     stock: number;
     is_active: number;
+    created_at: string;
 }

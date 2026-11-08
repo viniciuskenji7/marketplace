@@ -22,14 +22,19 @@ export const ProductList = ({ search }: ProductListProps) => {
   const filteredProducts = useMemo(() => {
     const query = search.trim().toLocaleLowerCase('pt-BR');
 
-    return products.filter(
+    return products
+      .filter(
       (product) =>
         product.isActive === 1 &&
         (!query ||
           `${product.name} ${product.description}`
             .toLocaleLowerCase('pt-BR')
             .includes(query)),
-    );
+      )
+      .sort(
+        (a, b) =>
+          Number(a.stock <= 0) - Number(b.stock <= 0),
+      );
   }, [products, search]);
 
   function addProductToCart(productId: number) {

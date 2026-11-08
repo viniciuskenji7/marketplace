@@ -14,6 +14,7 @@ function mapProduct(product: ProductApiResponse): Product {
         price: Number(product.price),
         stock: product.stock,
         isActive: product.is_active,
+        createdAt: product.created_at,
     };
 }
 
