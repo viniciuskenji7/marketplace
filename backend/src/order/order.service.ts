@@ -6,6 +6,7 @@ import { CheckoutDto } from './dto/checkout.dto.js';
 import { OrderItem } from '../order_items/entities/order_item.entity.js';
 import { Product } from '../product/entities/product.entity.js';
 import { Order } from './entities/order.entity.js';
+import { toCents } from '../common/money.js';
 
 @Injectable()
 export class OrderService {
@@ -32,14 +33,15 @@ export class OrderService {
         await this.decrementStock(manager, productId, quantity);
 
         const product = await manager.findOneByOrFail(Product, { id: productId });
-        const subTotalCents = product.price * quantity;
+        const unitPriceCents = toCents(product.price);
+        const subTotalCents = unitPriceCents * quantity;
         totalCents += subTotalCents;
         
         items.push(
           manager.create(OrderItem, {
             product: { id: productId },
             product_name: product.name,
-            unit_price_cents: product.price,
+            unit_price_cents: unitPriceCents,
             quantity,
             subtotal_cents: subTotalCents
           })

@@ -7,12 +7,12 @@ export const storedCheckoutSchema = z.object({
       z.object({
         productId: z.number(),
         name: z.string(),
-        unitPriceCents: z.number(),
+        unitPriceCents: z.number().int().nonnegative(),
         quantity: z.number(),
-        subTotalCents: z.number(),
+        subTotalCents: z.number().int().nonnegative(),
       }),
     ),
-    totalCents: z.number(),
+    totalCents: z.number().int().nonnegative(),
     emailSent: z.boolean(),
   }),
   customer: z.object({

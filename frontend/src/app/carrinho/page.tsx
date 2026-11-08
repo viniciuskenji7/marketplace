@@ -119,7 +119,7 @@ export default function CartPage() {
             )}
           </div>
           <CheckoutForm
-            total={cartQuery.data?.totalCents ?? 0}
+            totalCents={cartQuery.data?.totalCents ?? 0}
             isSubmitting={checkout.isPending}
             submitError={
               checkout.isError

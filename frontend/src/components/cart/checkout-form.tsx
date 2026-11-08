@@ -7,22 +7,17 @@ import {
   type CheckoutFormValues,
 } from '../../schemas/forms';
 import { showErrorToast } from '../../utils/toast';
+import { formatCentsAsCurrency } from '../../utils/format';
 
 interface CheckoutFormProps {
-  total: number;
+  totalCents: number;
   isSubmitting: boolean;
   submitError?: string;
   onSubmit: (values: CheckoutFormValues) => void | Promise<void>;
 }
 
-const formatPrice = (value: number) =>
-  Number(value).toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  });
-
 export function CheckoutForm({
-  total,
+  totalCents,
   isSubmitting,
   submitError,
   onSubmit,
@@ -81,7 +76,7 @@ export function CheckoutForm({
       <div className="mt-5 flex items-center justify-between border-t border-[#e1d7c6] pt-4">
         <span className="text-sm text-[#69746c]">Total</span>
         <strong className="font-display text-[26px] font-bold text-primary-color">
-          {formatPrice(total)}
+          {formatCentsAsCurrency(totalCents)}
         </strong>
       </div>
       <button

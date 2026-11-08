@@ -1,5 +1,10 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
+const decimalNumberTransformer = {
+    to: (value: number) => value,
+    from: (value: string | number) => Number(value),
+};
+
 @Entity('products')
 export class Product {
     @PrimaryGeneratedColumn()
@@ -14,7 +19,11 @@ export class Product {
     @Column('varchar', { length: 255 })
     image_url: string;
 
-    @Column('decimal', {precision: 10, scale: 2})
+    @Column('decimal', {
+        precision: 10,
+        scale: 2,
+        transformer: decimalNumberTransformer,
+    })
     price: number;
 
     @Column('int', { unsigned: true, default: 0 })

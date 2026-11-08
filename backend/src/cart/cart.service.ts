@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Product } from '../product/entities/product.entity.js';
 import { CartView } from './types/cart.types.js';
+import { toCents } from '../common/money.js';
 
 @Injectable()
 export class CartService {
@@ -34,12 +35,13 @@ export class CartService {
                 cart.delete(productId);
                 continue;
             }
+            const unitPriceCents = toCents(product.price);
             items.push({
                 productId,
                 name: product.name,
-                unitPriceCents: product.price,
+                unitPriceCents,
                 quantity,
-                subTotalCents: product.price * quantity
+                subTotalCents: unitPriceCents * quantity
             });
         }
 

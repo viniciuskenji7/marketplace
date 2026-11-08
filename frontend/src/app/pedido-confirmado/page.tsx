@@ -5,6 +5,7 @@ import { CircleCheck } from 'lucide-react';
 import Link from 'next/link';
 import { z } from 'zod';
 import { storedCheckoutSchema } from '@/src/schemas/storedCheckoutSchema';
+import { formatCentsAsCurrency } from '@/src/utils/format';
 
 type StoredCheckout = z.infer<typeof storedCheckoutSchema>;
 
@@ -13,9 +14,6 @@ type CheckoutPageState =
   | { status: 'missing' }
   | { status: 'invalid' }
   | { status: 'loaded'; checkout: StoredCheckout };
-
-const formatPrice = (value: number) =>
-  Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
 export default function OrderConfirmedPage() {
   const [checkoutState, setCheckoutState] = useState<CheckoutPageState>({
@@ -145,14 +143,14 @@ export default function OrderConfirmedPage() {
               className="flex items-center justify-between gap-4 border-b border-[#e1d7c6] py-3 text-sm"
             >
               <span>{item.label}</span>
-              <span>{formatPrice(item.total)}</span>
+              <span>{formatCentsAsCurrency(item.total)}</span>
             </div>
           ))}
         </div>
         <div className="mt-4 flex items-center justify-between">
           <span className="font-medium">Total</span>
           <strong className="font-display text-[25px] font-bold text-primary-color">
-            {formatPrice(orderTotal)}
+            {formatCentsAsCurrency(orderTotal)}
           </strong>
         </div>
         <Link
