@@ -13,10 +13,6 @@ export const checkoutSchema = z.object({
     .pipe(z.email('Informe um e-mail válido.')),
 });
 
-export const orderSearchSchema = z.object({
-  email: z.string().trim().pipe(z.email('Informe um e-mail válido.')),
-});
-
 export const productSchema = z.object({
   name: z.string().trim().min(2, 'O nome deve ter pelo menos 2 caracteres.'),
   description: z
@@ -34,5 +30,4 @@ export const productSchema = z.object({
 });
 
 export type CheckoutFormValues = z.infer<typeof checkoutSchema>;
-export type OrderSearchFormValues = z.infer<typeof orderSearchSchema>;
 export type ProductFormValues = z.infer<typeof productSchema>;

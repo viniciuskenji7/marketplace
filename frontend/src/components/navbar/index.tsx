@@ -20,9 +20,6 @@ export const Navbar = () => {
       </Link>
 
       <div className="flex items-center gap-5 text-[13px] text-[#59675d] sm:gap-8">
-        <Link className="transition-colors hover:text-primary-color" href="/pedidos">
-          Pedidos
-        </Link>
         <Link className="transition-colors hover:text-primary-color" href="/admin">
           Admin
         </Link>
