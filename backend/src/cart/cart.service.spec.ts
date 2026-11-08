@@ -1,6 +1,7 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Product } from '../product/entities/product.entity.js';
+import { WorkshopSession } from '../workshop/entities/workshop-session.entity.js';
 import { CartService } from './cart.service.js';
 
 describe('CartService', () => {
@@ -14,6 +15,7 @@ describe('CartService', () => {
   beforeEach(async () => {
     product = {
       id: 1,
+      product_type: 'physical',
       name: 'Caneca',
       description: 'Caneca de cerâmica',
       image_url: '/caneca.png',
@@ -34,6 +36,10 @@ describe('CartService', () => {
         {
           provide: getRepositoryToken(Product),
           useValue: productRepository,
+        },
+        {
+          provide: getRepositoryToken(WorkshopSession),
+          useValue: { find: vi.fn().mockResolvedValue([]), findOne: vi.fn() },
         },
       ],
     }).compile();
@@ -72,6 +78,7 @@ describe('CartService', () => {
   it('calcula subtotais e total em centavos', async () => {
     const secondProduct: Product = {
       id: 2,
+      product_type: 'physical',
       name: 'Chaveiro',
       description: 'Chaveiro de cerâmica',
       image_url: '/chaveiro.png',
@@ -90,6 +97,7 @@ describe('CartService', () => {
     expect(cart.items).toEqual([
       {
         productId: product.id,
+        type: 'physical',
         name: product.name,
         unitPriceCents: 1999,
         quantity: 2,
@@ -97,6 +105,7 @@ describe('CartService', () => {
       },
       {
         productId: secondProduct.id,
+        type: 'physical',
         name: secondProduct.name,
         unitPriceCents: 250,
         quantity: 3,

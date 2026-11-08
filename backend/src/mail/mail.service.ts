@@ -29,9 +29,12 @@ export class MailService {
   }
 
   async sendOrderConfirmation(order: Order): Promise<void> {
-    const rows = order.items.map((i) =>
-        `<tr><td>${escapeHtml(i.product_name)}</td><td>${i.quantity}</td><td>${brl(i.subtotal_cents)}</td></tr>`,
-    ).join('');
+    const rows = order.items.map((i) => {
+      const sessionDetails = i.session_starts_at
+        ? `<br><small>${escapeHtml(i.session_starts_at.toLocaleString('pt-BR'))} · ${i.quantity} participante(s) · ${escapeHtml(i.session_location ?? '')}</small>`
+        : '';
+      return `<tr><td>${escapeHtml(i.product_name)}${sessionDetails}</td><td>${i.quantity}</td><td>${brl(i.subtotal_cents)}</td></tr>`;
+    }).join('');
 
     const from = this.config.get<string>('MAIL_FROM') ?? 'Loja <onboarding@resend.dev>';
     const to = order.customer_email;

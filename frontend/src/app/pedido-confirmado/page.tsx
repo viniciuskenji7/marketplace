@@ -113,9 +113,15 @@ export default function OrderConfirmedPage() {
 
   const { checkout } = checkoutState;
   const orderItems = checkout.result.items.map((item) => ({
-    key: item.productId,
+    key: `${item.productId}-${item.sessionId ?? 'physical'}`,
     label: `${item.quantity}× ${item.name}`,
     total: item.subTotalCents,
+    reservation: item.type === 'workshop' && item.startsAt
+      ? `${new Intl.DateTimeFormat('pt-BR', {
+          dateStyle: 'full',
+          timeStyle: 'short',
+        }).format(new Date(item.startsAt))}${item.location ? ` · ${item.location}` : ''} · ${item.quantity} participante(s)`
+      : undefined,
   }));
   const customerName = checkout.customer.name;
   const customerEmail = checkout.customer.email;
@@ -140,10 +146,15 @@ export default function OrderConfirmedPage() {
           {orderItems.map((item) => (
             <div
               key={item.key}
-              className="flex items-center justify-between gap-4 border-b border-[#e1d7c6] py-3 text-sm"
+              className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-[#e1d7c6] py-3 text-sm"
             >
               <span>{item.label}</span>
               <span>{formatCentsAsCurrency(item.total)}</span>
+              {item.reservation && (
+                <p className="mt-1 basis-full text-xs text-[#69746c]">
+                  Reserva: {item.reservation}
+                </p>
+              )}
             </div>
           ))}
         </div>

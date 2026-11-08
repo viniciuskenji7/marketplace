@@ -4,8 +4,14 @@ import { checkout } from "../services/order";
 import { productKey } from "./useProducts";
 import type { Cart, CartItem, CartItemInput } from "../types/Cart";
 import type { Product } from "../types/Product";
+import type { Workshop } from "../types/Workshop";
 
 export const cartKey = 'cart';
+
+type AddToCartVariables = CartItemInput & {
+    optimisticProduct?: Product;
+    optimisticWorkshop?: Workshop;
+};
 
 type CartMutationContext = {
     previousCart: Cart | undefined;
@@ -27,16 +33,23 @@ export function useCart() {
 
 export function useAddToCart() {
     const queryClient = useQueryClient();
-    return useMutation<Cart, Error, CartItemInput, CartMutationContext>({
-        mutationFn: addToCart,
-        onMutate: async ({ productId, quantity }) => {
+    return useMutation<Cart, Error, AddToCartVariables, CartMutationContext>({
+        mutationFn: ({ productId, sessionId, quantity }) =>
+            addToCart({ productId, sessionId, quantity }),
+        onMutate: async ({
+            productId,
+            sessionId,
+            quantity,
+            optimisticProduct,
+            optimisticWorkshop,
+        }) => {
             await queryClient.cancelQueries({ queryKey: [cartKey] });
 
             const previousCart = queryClient.getQueryData<Cart>([cartKey]);
             if (!previousCart) return { previousCart };
 
             const existingItem = previousCart.items.find(
-                (item) => item.productId === productId,
+                (item) => item.productId === productId && item.sessionId === sessionId,
             );
             let optimisticItem: CartItem | undefined;
 
@@ -47,15 +60,18 @@ export function useAddToCart() {
                     quantity: newQuantity,
                     subTotalCents: existingItem.unitPriceCents * newQuantity,
                 };
-            } else {
-                const product = queryClient
-                    .getQueryData<Product[]>([productKey])
-                    ?.find((item) => item.id === productId && item.isActive === 1);
+            } else if (sessionId === undefined) {
+                const product =
+                    optimisticProduct ??
+                    queryClient
+                        .getQueryData<Product[]>([productKey])
+                        ?.find((item) => item.id === productId && item.isActive === 1);
 
                 if (product) {
                     const unitPriceCents = Math.round(product.price * 100);
                     optimisticItem = {
                         productId,
+                        type: 'physical',
                         name: product.name,
                         unitPriceCents,
                         quantity,
@@ -64,10 +80,33 @@ export function useAddToCart() {
                 }
             }
 
+            if (!optimisticItem && optimisticWorkshop && sessionId !== undefined) {
+                const session = optimisticWorkshop.sessions.find(
+                    (item) => item.id === sessionId,
+                );
+                if (session) {
+                    const unitPriceCents = Math.round(optimisticWorkshop.price * 100);
+                    optimisticItem = {
+                        productId,
+                        sessionId,
+                        type: 'workshop',
+                        name: optimisticWorkshop.name,
+                        unitPriceCents,
+                        quantity,
+                        subTotalCents: unitPriceCents * quantity,
+                        startsAt: session.startsAt,
+                        durationMinutes: session.durationMinutes,
+                        location: optimisticWorkshop.location,
+                    };
+                }
+            }
+
             if (optimisticItem) {
                 const items = existingItem
                     ? previousCart.items.map((item) =>
-                          item.productId === productId ? optimisticItem! : item,
+                          item.productId === productId && item.sessionId === sessionId
+                              ? optimisticItem!
+                              : item,
                       )
                     : [...previousCart.items, optimisticItem];
                 queryClient.setQueryData([cartKey], createCart(items));
@@ -76,7 +115,7 @@ export function useAddToCart() {
             return { previousCart };
         },
         onSuccess: (cart) => queryClient.setQueryData([cartKey], cart),
-        onError: (error, variables, context) => {
+        onError: (_error, _variables, context) => {
             if (context?.previousCart) {
                 queryClient.setQueryData([cartKey], context.previousCart);
             }
@@ -89,7 +128,7 @@ export function useUpdateCartItem() {
     const queryClient = useQueryClient();
     return useMutation<Cart, Error, CartItemInput, CartMutationContext>({
         mutationFn: updateCartItem,
-        onMutate: async ({ productId, quantity }) => {
+        onMutate: async ({ productId, sessionId, quantity }) => {
             await queryClient.cancelQueries({ queryKey: [cartKey] });
 
             const previousCart = queryClient.getQueryData<Cart>([cartKey]);
@@ -98,10 +137,12 @@ export function useUpdateCartItem() {
             const items =
                 quantity === 0
                     ? previousCart.items.filter(
-                          (item) => item.productId !== productId,
-                      )
-                    : previousCart.items.map((item) =>
-                          item.productId === productId
+                      (item) =>
+                          item.productId !== productId ||
+                          item.sessionId !== sessionId,
+                  )
+                : previousCart.items.map((item) =>
+                      item.productId === productId && item.sessionId === sessionId
                             ? {
                             ...item,
                             quantity,
@@ -114,7 +155,7 @@ export function useUpdateCartItem() {
             return { previousCart };
         },
         onSuccess: (cart) => queryClient.setQueryData([cartKey], cart),
-        onError: (error, variables, context) => {
+        onError: (_error, _variables, context) => {
             if (context?.previousCart) {
                 queryClient.setQueryData([cartKey], context.previousCart);
             }
@@ -131,10 +172,12 @@ export function useCheckout() {
             queryClient.setQueryData([cartKey], {items: [], totalCents: 0});
             queryClient.invalidateQueries({queryKey: [cartKey]});
             queryClient.invalidateQueries({queryKey: [productKey]});
+            queryClient.invalidateQueries({queryKey: ['workshops']});
         },
         onError: () => {
             queryClient.invalidateQueries({queryKey: [cartKey]});
             queryClient.invalidateQueries({queryKey: [productKey]});
+            queryClient.invalidateQueries({queryKey: ['workshops']});
         }
     })
 }

@@ -15,11 +15,11 @@ export class CartController {
 
   @Post()
   add(@CartId() cartId: string, @Body() dto: AddCartItemDto) {
-    return this.cartService.addItem(cartId, dto.productId, dto.quantity);
+    return this.cartService.addItem(cartId, dto.productId, dto.quantity, dto.sessionId);
   }
 
   @Put()
   update(@CartId() cartId: string, @Body() dto: UpdateCartItemDto) {
-    return this.cartService.updateItem(cartId, dto.productId, dto.quantity);
+    return this.cartService.updateItem(cartId, dto.productId, dto.quantity, dto.sessionId);
   }
 }

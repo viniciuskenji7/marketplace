@@ -49,6 +49,7 @@ describe('OrderService', () => {
   it('returns 409 and does not save an order when stock is insufficient', async () => {
     const product: Product = {
       id: 1,
+      product_type: 'physical',
       name: 'Caneca',
       description: 'Caneca de cerâmica',
       image_url: '/caneca.png',
@@ -84,6 +85,7 @@ describe('OrderService', () => {
     const products: Product[] = [
       {
         id: 1,
+        product_type: 'physical',
         name: 'Caneca',
         description: 'Caneca de cerâmica',
         image_url: '/caneca.png',
@@ -95,6 +97,7 @@ describe('OrderService', () => {
       },
       {
         id: 2,
+        product_type: 'physical',
         name: 'Chaveiro',
         description: 'Chaveiro simples',
         image_url: '/chaveiro.png',
@@ -134,12 +137,12 @@ describe('OrderService', () => {
     expect(manager.query).toHaveBeenNthCalledWith(
       1,
       expect.any(String),
-      [2, 1, 2],
+      [2, 1, 'physical', 2],
     );
     expect(manager.query).toHaveBeenNthCalledWith(
       2,
       expect.any(String),
-      [3, 2, 3],
+      [3, 2, 'physical', 3],
     );
     expect(manager.save).toHaveBeenCalledTimes(1);
     const savedOrder = manager.save.mock.calls[0][0] as {

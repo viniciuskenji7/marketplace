@@ -6,6 +6,7 @@ import { CartItemsList } from '../../components/cart/cart-items-list';
 import { CheckoutForm } from '../../components/cart/checkout-form';
 import type { CheckoutFormValues } from '../../schemas/forms';
 import type { CheckoutResult } from '../../types/Checkout';
+import type { CartItem } from '../../types/Cart';
 import { useCart, useCheckout, useUpdateCartItem } from '../../hooks/useCart';
 import { getErrorMessage } from '../../utils/get-error-message';
 import {
@@ -21,8 +22,7 @@ export default function CartPage() {
   const checkout = useCheckout();
   const items = cartQuery.data?.items ?? [];
 
-  function handleQuantityChange(productId: number, quantity: number) {
-    const item = items.find((cartItem) => cartItem.productId === productId);
+  function handleQuantityChange(item: CartItem, quantity: number) {
     const toastId = showLoadingToast(
       quantity === 0
         ? `Removendo ${item?.name ?? 'produto'} do carrinho...`
@@ -30,7 +30,7 @@ export default function CartPage() {
     );
 
     updateCartItem.mutate(
-      { productId, quantity },
+      { productId: item.productId, sessionId: item.sessionId, quantity },
       {
         onSuccess: () =>
           showSuccessToast(
