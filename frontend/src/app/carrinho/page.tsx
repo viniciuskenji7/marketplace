@@ -123,9 +123,10 @@ export default function CartPage() {
             isSubmitting={checkout.isPending}
             submitError={
               checkout.isError
-                ? checkout.error instanceof Error
-                  ? checkout.error.message
-                  : 'Não foi possível finalizar o pedido. Tente novamente.'
+                ? getErrorMessage(
+                    checkout.error,
+                    'Não foi possível finalizar o pedido. Tente novamente.',
+                  )
                 : undefined
             }
             onSubmit={handleCheckout}

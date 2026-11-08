@@ -1,8 +1,16 @@
 import { z } from 'zod';
 
 export const checkoutSchema = z.object({
-  name: z.string().trim().min(2, 'Informe seu nome (mínimo 2 caracteres).'),
-  email: z.string().trim().pipe(z.email('Informe um e-mail válido.')),
+  name: z
+    .string()
+    .trim()
+    .min(2, 'Informe seu nome (mínimo 2 caracteres).')
+    .max(120, 'O nome deve ter no máximo 120 caracteres.'),
+  email: z
+    .string()
+    .trim()
+    .max(255, 'O e-mail deve ter no máximo 255 caracteres.')
+    .pipe(z.email('Informe um e-mail válido.')),
 });
 
 export const orderSearchSchema = z.object({

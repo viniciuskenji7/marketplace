@@ -12,6 +12,7 @@ export function getErrorMessage(error: unknown, fallback: string): string {
     ) {
       return responseMessage.join(' ');
     }
+    return fallback;
   }
 
   return error instanceof Error && error.message ? error.message : fallback;

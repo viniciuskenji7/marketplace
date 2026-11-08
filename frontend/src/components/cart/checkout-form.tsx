@@ -25,15 +25,33 @@ export function CheckoutForm({
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: { name: '', email: '' },
   });
 
+  function submitCheckout(values: CheckoutFormValues) {
+    const result = checkoutSchema.safeParse(values);
+    if (!result.success) {
+      for (const issue of result.error.issues) {
+        const field = issue.path[0];
+        if (field === 'name' || field === 'email') {
+          setError(field, { type: 'manual', message: issue.message });
+        }
+      }
+      showErrorToast('Revise os campos destacados antes de continuar.');
+      return;
+    }
+
+    return onSubmit(result.data);
+  }
+
   return (
     <form
-      onSubmit={handleSubmit(onSubmit, () =>
+      noValidate
+      onSubmit={handleSubmit(submitCheckout, () =>
         showErrorToast('Revise os campos destacados antes de continuar.'),
       )}
       className="rounded-[20px] border border-[#e1d7c6] bg-[#fffdf9] p-6 shadow-[0_8px_24px_rgba(47,39,23,0.06)] sm:p-7"
@@ -45,6 +63,7 @@ export function CheckoutForm({
         Nome
         <input
           {...register('name')}
+          maxLength={120}
           aria-invalid={Boolean(errors.name)}
           className="mt-1 block h-10 w-full rounded-[11px] border border-[#ded4c2] bg-transparent px-3 outline-none shadow-sm focus:border-primary-color"
         />
@@ -59,6 +78,7 @@ export function CheckoutForm({
         <input
           type="email"
           {...register('email')}
+          maxLength={255}
           aria-invalid={Boolean(errors.email)}
           className="mt-1 block h-10 w-full rounded-[11px] border border-[#ded4c2] bg-transparent px-3 outline-none shadow-sm focus:border-primary-color"
         />
